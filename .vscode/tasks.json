@@ -15,8 +15,9 @@
 
 				"/opt/homebrew/Cellar/glfw/3.3.5/lib/libglfw.3.dylib",
                 
+                "${workspaceFolder}/Source/Agent/*.cpp",
                 "${workspaceFolder}/Source/Environment/*.cpp",
-                //"${workspaceFolder}/Source/Agent/*.cpp",
+                "${workspaceFolder}/Source/Utils/*.cpp",
                 "${workspaceFolder}/Source/Visualization/glad/glad.c",
                 "${workspaceFolder}/Source/Visualization/Grid/*.cpp",
                 "${workspaceFolder}/Source/Visualization/Shader/*.cpp",	
