@@ -1,6 +1,14 @@
 #include "../../Include/Utils/CommonUtils.h"
 #include <random>
 
+/* mouse click position
+*/
+double xPos, yPos;
+/* this is needed so that we operate only once in the loop. Also, we compute cellX, cellY only 
+ * if this boolean is set
+*/
+volatile bool mouseClicked = false;
+
 /* given a start and an end range, generate a random number.
 */
 int getRandomAmount(int start, int end){

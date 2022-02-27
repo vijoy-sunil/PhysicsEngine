@@ -37,8 +37,10 @@ typedef struct{
 class AgentClass{
     private:
         int id;
-        std::map<int, agentAttribute_t> agentMap;
  
+    protected:
+        std::map<int, agentAttribute_t> agentMap;
+        
     public:
         AgentClass(void);
         ~AgentClass(void);

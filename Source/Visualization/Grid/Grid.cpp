@@ -1,11 +1,9 @@
 #include "../../../Include/Visualization/Grid/Grid.h"
 #include "../../../Include/Visualization/Shader/Shader.h"
+#include "../../../Include/Utils/CommonUtils.h"
 #include <iostream>
 #include <stdlib.h>
 #include <cassert>
-
-double xPos, yPos;
-bool mouseClicked = false;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
     if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
@@ -35,7 +33,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
  * cellY. NOTE: If the scale changes (by resizing the window while running) then this function 
  * fails to find the right cell coords. Here, we have disabled window resizing.
 */
-void GridClass::mouseAction(double mouseXPos, double mouseYPos){
+std::pair<int, int> GridClass::mouseAction(double mouseXPos, double mouseYPos){
     /* First we remove the scale factor from the position returned. Next, xPos remains the same
      * (based on the above figure), but rate of change of yPos has to be inverted
     */
@@ -43,11 +41,12 @@ void GridClass::mouseAction(double mouseXPos, double mouseYPos){
     mouseYPos = N - (mouseYPos/scale);
     /* compute grid cell position
     */
-    cellX = (int)mouseXPos;
-    cellY = (int)mouseYPos;
+    int cellX = (int)mouseXPos;
+    int cellY = (int)mouseYPos;
 #if 0
     std::cout<<"cellX: "<<cellX<<" cellY: "<<cellY<<std::endl;
 #endif
+    return {cellX, cellY};
 }
 
 GridClass::GridClass(int _N, int _scale, bool noStroke){

@@ -21,6 +21,10 @@ bool GridUtilsClass::isCellFree(std::pair<int, int> pos){
     return cellState[getIdx(pos)] == FREE;
 }
 
+bool GridUtilsClass::isCellAgent(std::pair<int, int> pos){
+    return cellState[getIdx(pos)] == AGENT;
+}
+
 bool GridUtilsClass::isCellObstacle(std::pair<int, int> pos){
     return cellState[getIdx(pos)] == OBSTACLE;
 }
@@ -30,6 +34,13 @@ void GridUtilsClass::setCellAsFree(std::pair<int, int> pos){
     /* set color according to cell state
     */
     setCellColorFromState(pos, FREE);
+}
+
+void GridUtilsClass::setCellAsAgent(std::pair<int, int> pos){
+    cellState[getIdx(pos)] = AGENT;
+    /* set color according to cell state
+    */
+    setCellColorFromState(pos, AGENT);
 }
 
 void GridUtilsClass::setCellAsObstacle(std::pair<int, int> pos){
@@ -63,7 +74,7 @@ std::pair<int, int> posEnd, const int width, widthType_t wType){
 
 void GridUtilsClass::setCellColorFromState(std::pair<int, int> pos, 
 cellState_t state, float alpha){
-    colorVal cVal = state == FREE ? whiteVal :blackVal;
+    colorVal cVal = state == FREE ? whiteVal : state == AGENT ? redVal: blackVal;
     genCellColor(pos.first, pos.second, cVal, alpha);
 }
 

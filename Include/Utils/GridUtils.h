@@ -8,6 +8,7 @@
 */
 typedef enum{
     FREE,
+    AGENT,
     OBSTACLE
 }cellState_t;
 
@@ -34,10 +35,13 @@ class GridUtilsClass: public GridClass{
         
         int getIdx(std::pair<int, int> pos);
         bool isCellFree(std::pair<int, int> pos);
+        bool isCellAgent(std::pair<int, int> pos);
         bool isCellObstacle(std::pair<int, int> pos);
 
         void setCellAsFree(std::pair<int, int> pos);
+        void setCellAsAgent(std::pair<int, int> pos);
         void setCellAsObstacle(std::pair<int, int> pos);
+
         void setCellAsObstacleStream(std::pair<int, int> posStart, 
         std::pair<int, int> posEnd, const int width, widthType_t wType);
 

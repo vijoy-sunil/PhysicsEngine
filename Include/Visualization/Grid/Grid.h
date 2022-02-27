@@ -123,15 +123,12 @@ class GridClass{
          * everything in it
         */
         int N;
-        /* cell position based on mouse click
-        */
-        int cellX, cellY;
         /* predefined color values
         */
         colorVal redVal, greenVal, blueVal, blackVal, whiteVal;
 
         void genCellColor(int i, int j, colorVal cVal, float alpha);
-        void mouseAction(double mouseXPos, double mouseYPos);
+        std::pair<int, int> mouseAction(double mouseXPos, double mouseYPos);
 
         virtual void setInitialCells(void) = 0;
         virtual void simulationStep(void) = 0;

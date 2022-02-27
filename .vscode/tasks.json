@@ -11,6 +11,9 @@
 				"-std=c++17",
 				"-stdlib=libc++",
                 
+                "--include-directory=${workspaceFolder}/Include/Agent/", 
+                "--include-directory=${workspaceFolder}/Include/Environment/", 
+                "--include-directory=${workspaceFolder}/Include/Utils/", 
 				"--include-directory=${workspaceFolder}/Include/Visualization/",   
 
 				"/opt/homebrew/Cellar/glfw/3.3.5/lib/libglfw.3.dylib",
