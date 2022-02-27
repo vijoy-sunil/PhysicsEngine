@@ -14,9 +14,9 @@ typedef enum{
 /* attributes of the agent core
  * id                   : each agent will have an unique id
  * shape                : shape of agent
+ * numParticles         : number of particles that make up this agent {1, 9, 25 etc.}
  * dim                  : x, y dimensions ({1, 1} x sqrt(numParticles))
  * com                  : center of mass (x, y) point
- * numParticles         : number of particels that make up this agent {1, 9, 25 etc.}
  * mass                 : mass in kg
  * surfaceSmoothness    : defines smoothness of agent surface [0(smooth) to 1(rough)]
  * velocity             : [angle, magnitude] pair (m/s)
@@ -25,9 +25,9 @@ typedef enum{
 typedef struct{
     int id;
     agentShape_t shape;
+    int numParticles;
     std::pair<int, int> dim;
     std::pair<int, int> com;
-    int numParticles;
     float mass;
     float surfaceSmoothness;
     std::pair<float, float> velocity;

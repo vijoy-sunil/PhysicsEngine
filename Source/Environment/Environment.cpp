@@ -18,10 +18,12 @@ EnvironmentClass::~EnvironmentClass(void){
 }
 
 bool EnvironmentClass::spawnAgent(agentAttribute_t attr){
-    /* we need to extract, number of cells to draw, shape, dim and position
+    /* draw agent cell/block
     */
     int numCells = attr.numParticles;
-    numCells == 1 ? setCellAsAgent(attr.com) : setBlockAsAgent(attr.com, attr.dim);
+    if(attr.shape == RECTANGLE)
+        numCells == 1 ? setCellAsAgent(attr.com) : setBlockAsAgent(attr.com, attr.dim);
+    return true;
 }
 
 bool EnvironmentClass::validPendingAgent(int agentID){
@@ -91,8 +93,10 @@ void EnvironmentClass::simulationStep(void){
         agentAttribute_t attr = agentMap[agentID];
         spawnAgent(attr);
     }
+    /* calculate all forces for all agents and update its velocity and acceleration attributes
+    */
 
-    /* update agent
+    /* update all agents by changing its com based on velocity and acceleration
     */
 
 }
