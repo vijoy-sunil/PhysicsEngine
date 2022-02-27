@@ -42,10 +42,15 @@ class GridUtilsClass: public GridClass{
         void setCellAsAgent(std::pair<int, int> pos);
         void setCellAsObstacle(std::pair<int, int> pos);
 
+        void setBlockAsAgent(std::pair<int, int> pos, std::pair<int, int> dim);
+
         void setCellAsObstacleStream(std::pair<int, int> posStart, 
         std::pair<int, int> posEnd, const int width, widthType_t wType);
 
         void setCellColorFromState(std::pair<int, int> pos, cellState_t state, float alpha=1.0);
+        void setBlockAsState(std::pair<int, int> pos, std::pair<int, int> dim, 
+        cellState_t state, float alpha=1.0);
+
         std::vector<std::pair<int, int> > connectTwoCells(std::pair<int, int> posStart, 
         std::pair<int, int> posEnd);
 

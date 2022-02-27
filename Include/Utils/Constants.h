@@ -3,10 +3,10 @@
 
 /* grid dimension NxN
 */
-const int _N = 700;
+const int _N = 70;
 /* screen scale factor
 */
-const int _scale = 1;
+const int _scale = 10;
 /* gravity in (m/s2)
 */
 const float _g = 9.8;

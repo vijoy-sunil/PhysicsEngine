@@ -21,9 +21,31 @@ bool EnvironmentClass::spawnAgent(agentAttribute_t attr){
     /* we need to extract, number of cells to draw, shape, dim and position
     */
     int numCells = attr.numParticles;
-    for(int i = 0; i < numCells; i++){
-        setCellAsAgent(attr.com);
+    numCells == 1 ? setCellAsAgent(attr.com) : setBlockAsAgent(attr.com, attr.dim);
+}
+
+bool EnvironmentClass::validPendingAgent(int agentID){
+    agentAttribute_t attr = agentMap[agentID];
+    /* check if com is in free cell
+    */
+    if(!isCellFree(attr.com))
+        return false;
+    /* check all particles
+    */
+    if(attr.numParticles != 1){
+        std::pair<int, int> dimFmt = {attr.dim.first/2, attr.dim.second/2};
+        int r, c;
+        int i = attr.com.first;
+        int j = attr.com.second;
+
+        for(r = -dimFmt.first; r <= dimFmt.first; r++){
+            for(c = -dimFmt.second; c <= dimFmt.second; c++){
+                if(!isCellFree({i + r, j + c}))
+                    return false;
+            }
+        }
     }
+    return true;
 }
 
 /* |-----------------------------------------------------|
@@ -55,9 +77,12 @@ void EnvironmentClass::simulationStep(void){
         mouseClicked = false;
         std::pair<int, int> cellPos = mouseAction(xPos, yPos);
         int agentID = createAgent_test(cellPos);
-        /* add agent id to list
+        /* create agent only if mouse clicked in free cell; and if all particles are in free cell
         */
-        agentIDList.push_back(agentID);
+        if(validPendingAgent(agentID))
+            agentIDList.push_back(agentID);
+        else
+            removeAgent(agentID);
     }
     /* draw all agents
     */

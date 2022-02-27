@@ -28,9 +28,10 @@ class EnvironmentClass: public AgentClass, public GridUtilsClass{
     public:
         EnvironmentClass(float _g, float _d, int _N, int _scale, bool noStroke);
         ~EnvironmentClass(void);
-        /* draw agent
+        /* agent fns
         */
         bool spawnAgent(agentAttribute_t attr);
+        bool validPendingAgent(int agentID);
         /* force input
         */
         bool addForce(std::pair<int, int> pos, float magnitude, float direction);

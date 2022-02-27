@@ -50,6 +50,13 @@ void GridUtilsClass::setCellAsObstacle(std::pair<int, int> pos){
     setCellColorFromState(pos, OBSTACLE);
 }
 
+void GridUtilsClass::setBlockAsAgent(std::pair<int, int> pos, std::pair<int, int> dim){
+    /* format dim
+    */
+    std::pair<int, int> dimFmt = {dim.first/2, dim.second/2};
+    setBlockAsState(pos, dimFmt, AGENT);
+}
+
 /* used to create line obstacles (walls), this also takes in the width parameter
 */
 void GridUtilsClass::setCellAsObstacleStream(std::pair<int, int> posStart, 
@@ -76,6 +83,34 @@ void GridUtilsClass::setCellColorFromState(std::pair<int, int> pos,
 cellState_t state, float alpha){
     colorVal cVal = state == FREE ? whiteVal : state == AGENT ? redVal: blackVal;
     genCellColor(pos.first, pos.second, cVal, alpha);
+}
+
+void GridUtilsClass::setBlockAsState(std::pair<int, int> pos, std::pair<int, int> dim, 
+cellState_t state, float alpha){
+    int r, c;
+    int i = pos.first;
+    int j = pos.second;
+
+    for(r = -dim.first; r <= dim.first; r++){
+        for(c = -dim.second; c <= dim.second; c++){
+            /* boundary guards
+            */
+            if((i + r < 0) || (i + r > N-1))
+                continue;
+            if((j + c < 0) || (j + c > N-1))
+                continue;
+            
+            /* only operate on free cells, when we are setting states, but when we are trying to 
+             * free only operate on end cell
+            */
+            if(isCellFree({i + r, j + c})){
+                cellState[getIdx({i + r, j + c})] = state;
+                /* set color according to cell state
+                */
+                setCellColorFromState({i + r, j + c}, state, alpha);   
+            }        
+        }
+    }
 }
 
 /* return cell coordinates between (i1,j1) and (i2,j2), both end points included
