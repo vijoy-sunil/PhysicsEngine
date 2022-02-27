@@ -1,7 +1,8 @@
+#include "../Include/Utils/Constants.h"
 #include "../Include/Environment/Environment.h"
 
 int main(void){
-    EnvironmentClass env(20, 10, true);
+    EnvironmentClass env(_g, _d, _N, _scale, true);
     env.runRender();
     return 0;
 }

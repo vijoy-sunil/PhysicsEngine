@@ -1,5 +1,5 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef UTILS_CONSTANTS_H
+#define UTILS_CONSTANTS_H
 
 /* grid dimension NxN
 */
@@ -14,5 +14,5 @@ const float _g = 9.8;
 */
 const float _d = 1.2;
 
-#endif /* CONSTANTS_H
+#endif /* UTILS_CONSTANTS_H
 */

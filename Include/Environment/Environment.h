@@ -1,7 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
-#include "../../Include/Visualization/Grid/Grid.h"
+#include "../../Include/Utils/GridUtils.h"
 #include "../../Include/Agent/Agent.h"
 #include <vector>
 
@@ -16,7 +16,7 @@ typedef struct{
     std::vector<float> frictionList;
 }envAttribute_t;
 
-class EnvironmentClass: public AgentClass, public GridClass{
+class EnvironmentClass: public AgentClass, public GridUtilsClass{
     private:
         /* env attribute
         */
