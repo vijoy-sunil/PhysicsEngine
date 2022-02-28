@@ -25,8 +25,6 @@ void AgentClass::dumpActiveAgents(void){
         std::cout<<"surface smoothness: "<<it->second.surfaceSmoothness<<std::endl;
         std::cout<<"velocity: "<<it->second.velocity.first<<","
         <<it->second.velocity.second<<std::endl;
-        std::cout<<"acceleration: "<<it->second.acceleration.first<<","
-        <<it->second.acceleration.second<<std::endl;
     }
 }
 
@@ -45,7 +43,6 @@ int AgentClass::createAgent_test(std::pair<int, int> pos){
     attr.mass = 10;
     attr.surfaceSmoothness = 0.5;
     attr.velocity = {0.0, 0.0};
-    attr.acceleration = {0.0, 0.0};
 
     /* add to map
     */

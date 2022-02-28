@@ -19,8 +19,7 @@ typedef enum{
  * com                  : center of mass (x, y) point
  * mass                 : mass in kg
  * surfaceSmoothness    : defines smoothness of agent surface [0(smooth) to 1(rough)]
- * velocity             : [angle, magnitude] pair (m/s)
- * acceleration         : [angle, magniture] pair (m/s2)
+ * velocity             : [velocity in x, velocity in y] pair (m/s)
 */
 typedef struct{
     int id;
@@ -31,7 +30,6 @@ typedef struct{
     float mass;
     float surfaceSmoothness;
     std::pair<float, float> velocity;
-    std::pair<float, float> acceleration;
 }agentAttribute_t;
 
 class AgentClass{
