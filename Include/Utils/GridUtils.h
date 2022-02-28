@@ -42,6 +42,7 @@ class GridUtilsClass: public GridClass{
         void setCellAsAgent(std::pair<int, int> pos);
         void setCellAsObstacle(std::pair<int, int> pos);
 
+        void setBlockAsFree(std::pair<int, int> pos, std::pair<int, int> dim);
         void setBlockAsAgent(std::pair<int, int> pos, std::pair<int, int> dim);
 
         void setCellAsObstacleStream(std::pair<int, int> posStart, 

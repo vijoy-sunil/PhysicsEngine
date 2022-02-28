@@ -50,6 +50,13 @@ void GridUtilsClass::setCellAsObstacle(std::pair<int, int> pos){
     setCellColorFromState(pos, OBSTACLE);
 }
 
+void GridUtilsClass::setBlockAsFree(std::pair<int, int> pos, std::pair<int, int> dim){
+    /* format dim
+    */
+    std::pair<int, int> dimFmt = {dim.first/2, dim.second/2};
+    setBlockAsState(pos, dimFmt, FREE);
+}
+
 void GridUtilsClass::setBlockAsAgent(std::pair<int, int> pos, std::pair<int, int> dim){
     /* format dim
     */
@@ -100,10 +107,11 @@ cellState_t state, float alpha){
             if((j + c < 0) || (j + c > N-1))
                 continue;
             
-            /* only operate on free cells, when we are setting states, but when we are trying to 
-             * free only operate on end cell
+            /* only operate on free cells, when we are setting state to AGENT, in the same way
+             * only operate on agent cells, when er are setting state to FREE
             */
-            if(isCellFree({i + r, j + c})){
+            if((state == AGENT && isCellFree({i + r, j + c})) ||
+            (state == FREE && isCellAgent({i + r, j + c}))){
                 cellState[getIdx({i + r, j + c})] = state;
                 /* set color according to cell state
                 */

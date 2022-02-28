@@ -6,14 +6,14 @@
 #include <vector>
 
 /* attributes of the environment core
- * gravity      : gravitational force on the atmosphere operates uniformly (m/s2)
- * density      : drag experienced by a falling object depends on the air density (kg/m3)
- * frictionList : ground surface friction for different types of surfaces
+ * gravity              : gravitational force on the atmosphere operates uniformly (m/s2)
+ * density              : drag experienced by a falling object depends on the air density (kg/m3)
+ * surfaceSmoothness    : surface smoothness for different types of surfaces
 */
 typedef struct{
     float gravity;
     float density;
-    std::vector<float> frictionList;
+    std::vector<float> surfaceSmoothness;
 }envAttribute_t;
 
 class EnvironmentClass: public AgentClass, public GridUtilsClass{

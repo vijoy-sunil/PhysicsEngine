@@ -65,10 +65,10 @@ void EnvironmentClass::setInitialCells(void){
     setCellAsObstacleStream({N/2, N/2}, {N-1, N/2}, borderWidth, BOTTOM);
     /* friction
     */
-    envAttribute.frictionList.push_back(0.5);
-    envAttribute.frictionList.push_back(0.5);
-    envAttribute.frictionList.push_back(0.5);
-    envAttribute.frictionList.push_back(0.5);
+    envAttribute.surfaceSmoothness.push_back(0.5);
+    envAttribute.surfaceSmoothness.push_back(0.5);
+    envAttribute.surfaceSmoothness.push_back(0.5);
+    envAttribute.surfaceSmoothness.push_back(0.5);
 #endif
 }
 
@@ -96,7 +96,8 @@ void EnvironmentClass::simulationStep(void){
     /* calculate all forces for all agents and update its velocity and acceleration attributes
     */
 
-    /* update all agents by changing its com based on velocity and acceleration
+    /* update all agents by changing its com based on velocity and acceleration, NOTE: clear 
+     * previously set agent before updating
     */
 
 }
