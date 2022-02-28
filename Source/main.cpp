@@ -2,7 +2,7 @@
 #include "../Include/Environment/Environment.h"
 
 int main(void){
-    EnvironmentClass env(_g, _d, _N, _scale, true);
+    EnvironmentClass env(_dt, _g, _d, _N, _scale, true);
     env.runRender();
     return 0;
 }
