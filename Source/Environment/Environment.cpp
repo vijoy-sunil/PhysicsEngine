@@ -3,13 +3,14 @@
 #include "../../Include/Utils/CommonUtils.h"
 #include <iostream>
 
-EnvironmentClass::EnvironmentClass(float _g, float _d, 
+EnvironmentClass::EnvironmentClass(float _dt, float _g, float _d, 
                                    int _N, int _scale, bool noStroke):
 AgentClass(),
 GridUtilsClass(_N, _scale, noStroke)
 {
     /* save env attribute
     */
+    envAttribute.dt = _dt;
     envAttribute.gravity = _g;
     envAttribute.density = _d;
 }
@@ -50,6 +51,20 @@ bool EnvironmentClass::validPendingAgent(int agentID){
     return true;
 }
 
+std::pair<int, int> EnvironmentClass::computeForce(agentAttribute_t attr){
+    return {0, attr.mass * envAttribute.gravity};
+}
+
+std::pair<int, int> EnvironmentClass::computeMotion(agentAttribute_t attr){
+    int posX = attr.com.first;
+    int posY = attr.com.second;
+
+    posX += attr.velocity.first * envAttribute.dt;
+    posY += attr.velocity.second * envAttribute.dt;
+
+    return {posX, posY};
+}
+
 /* |-----------------------------------------------------|
  * |         OVERRIDE BASE CLASS FUNCTIONS               |
  * |-----------------------------------------------------|
@@ -73,6 +88,56 @@ void EnvironmentClass::setInitialCells(void){
 }
 
 void EnvironmentClass::simulationStep(void){
+    /* calculate all forces for all agents and update its velocity and acceleration attributes
+    */
+    for(int i = 0; i < agentIDList.size(); i++){
+        int agentID = agentIDList[i];
+        agentAttribute_t attr = agentMap[agentID];
+        /* |-----------------------------------------------------|
+         * |            PHYSICS COMPUTE FORCES                   |
+         * | calculate velocity and acceleration based on forces |
+         * |-----------------------------------------------------|
+         */
+        std::pair<float, float> force = computeForce(attr);
+        /* update acceleration and velocity
+        */
+        std::pair<float, float> acceleration = {force.first/attr.mass, force.second/attr.mass};
+        attr.velocity.first += acceleration.first * envAttribute.dt;
+        attr.velocity.second += acceleration.second * envAttribute.dt;
+        /* update map
+        */
+        agentMap[agentID] = attr;
+    }
+
+    /* update all agents' com, updated agents will be drawn in next frame. NOTE: save previous 
+     * agent.com before overwriting it. If they are the same, we don't need to clear the agent. 
+     * If different, clear previous.
+    */
+    for(int i = 0; i < agentIDList.size(); i++){
+        int agentID = agentIDList[i];
+        agentAttribute_t attr = agentMap[agentID];
+
+        std::pair<int, int> currCom = attr.com;
+        /* |-----------------------------------------------------|
+         * |            PHYSICS COMPUTE MOTION                   |
+         * |       calculate nextCom based on velocity           |
+         * |-----------------------------------------------------|
+         */
+        std::pair<int, int> nextCom = computeMotion(attr);
+        /* clear agent if currCom != nextCom
+        */
+        if(currCom.first != nextCom.first || currCom.second != nextCom.second){
+            if(attr.shape == RECTANGLE)
+                attr.numParticles == 1 ? setCellAsFree(attr.com) : 
+                setBlockAsFree(attr.com, attr.dim);      
+
+            /* overwrite currCom with nextCom and update agent map
+            */
+            attr.com = nextCom;   
+            agentMap[agentID] = attr;
+        }
+    }
+
     /* create agent on mouse click
     */
     if(mouseClicked){
@@ -86,6 +151,7 @@ void EnvironmentClass::simulationStep(void){
         else
             removeAgent(agentID);
     }
+
     /* draw all agents
     */
     for(int i = 0; i < agentIDList.size(); i++){
@@ -93,11 +159,7 @@ void EnvironmentClass::simulationStep(void){
         agentAttribute_t attr = agentMap[agentID];
         spawnAgent(attr);
     }
-    /* calculate all forces for all agents and update its velocity and acceleration attributes
-    */
 
-    /* update all agents by changing its com based on velocity and acceleration, NOTE: clear 
-     * previously set agent before updating
-    */
-
+#if DEBUG_PRINT == 1
+#endif
 }
