@@ -52,7 +52,17 @@ bool EnvironmentClass::validPendingAgent(int agentID){
 }
 
 std::pair<int, int> EnvironmentClass::computeForce(agentAttribute_t attr){
-    return {0, attr.mass * envAttribute.gravity};
+    /* gravitational force
+    */
+    std::pair<float, float> gravitationalForce = {0, attr.mass * envAttribute.gravity};
+
+    /* sum up all forces acting on the agent
+    */
+    std::pair<float, float> cumulativeForce = {0.0, 0.0};
+    cumulativeForce.first += gravitationalForce.first;
+    cumulativeForce.second += gravitationalForce.second;
+
+    return cumulativeForce;
 }
 
 std::pair<int, int> EnvironmentClass::computeMotion(agentAttribute_t attr){
@@ -88,7 +98,7 @@ void EnvironmentClass::setInitialCells(void){
 }
 
 void EnvironmentClass::simulationStep(void){
-    /* calculate all forces for all agents and update its velocity and acceleration attributes
+    /* calculate all forces for all agents and update its velocity attribute
     */
     for(int i = 0; i < agentIDList.size(); i++){
         int agentID = agentIDList[i];
@@ -161,5 +171,10 @@ void EnvironmentClass::simulationStep(void){
     }
 
 #if DEBUG_PRINT == 1
+    if(agentIDList.size() != 0){
+        agentAttribute_t attr = agentMap[0];
+        std::cout<<"[DEBUG] agent vel: "<<attr.velocity.first<<","
+        <<attr.velocity.second<<std::endl;
+    }
 #endif
 }
