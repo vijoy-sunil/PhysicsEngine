@@ -23,8 +23,8 @@ void AgentClass::dumpActiveAgents(void){
         std::cout<<"com: "<<it->second.com.first<<","<<it->second.com.second<<std::endl;
         std::cout<<"mass: "<<it->second.mass<<std::endl;
         std::cout<<"surface smoothness: "<<it->second.surfaceSmoothness<<std::endl;
-        std::cout<<"velocity: "<<it->second.velocity.first<<","
-        <<it->second.velocity.second<<std::endl;
+        std::cout<<"velocity: "<<it->second.velocity.x<<","
+        <<it->second.velocity.y<<std::endl;
     }
 }
 

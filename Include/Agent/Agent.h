@@ -1,6 +1,7 @@
 #ifndef AGENT_H
 #define AGENT_H
 
+#include "../../Include/Utils/CommonUtils.h"
 #include <map>
 
 /* agent body shape
@@ -19,7 +20,7 @@ typedef enum{
  * com                  : center of mass (x, y) point
  * mass                 : mass in kg
  * surfaceSmoothness    : defines smoothness of agent surface [0(smooth) to 1(rough)]
- * velocity             : [velocity in x, velocity in y] pair (m/s)
+ * velocity             : [velocity in x, velocity in y] (m/s)
 */
 typedef struct{
     int id;
@@ -29,7 +30,7 @@ typedef struct{
     std::pair<int, int> com;
     float mass;
     float surfaceSmoothness;
-    std::pair<float, float> velocity;
+    vector_t velocity;
 }agentAttribute_t;
 
 class AgentClass{
