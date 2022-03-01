@@ -3,6 +3,7 @@
 
 #include "../../Include/Utils/GridUtils.h"
 #include "../../Include/Agent/Agent.h"
+#include "../../Include/Utils/CommonUtils.h"
 #include <vector>
 
 /* attributes of the environment core
@@ -27,18 +28,21 @@ class EnvironmentClass: public AgentClass, public GridUtilsClass{
         */
         std::vector<int> agentIDList;
 
-    public:
-        EnvironmentClass(float _dt, float _g, float _d, int _N, int _scale, bool noStroke);
-        ~EnvironmentClass(void);
+    protected:
         /* agent fns
         */
         bool spawnAgent(agentAttribute_t attr);
         bool validPendingAgent(int agentID);
         /* physics
         */
-        std::pair<int, int> computeForce(agentAttribute_t attr);
+        std::pair<int, int> computeDrag(agentAttribute_t attr);
+        std::pair<int, int> computeNetForce(agentAttribute_t attr);
         std::pair<int, int> computeMotion(agentAttribute_t attr);
-        bool addForce(std::pair<int, int> pos, float magnitude, float direction);
+        bool addForce(std::pair<int, int> pos, vector_t force);
+
+    public:
+        EnvironmentClass(float _dt, float _g, float _d, int _N, int _scale, bool noStroke);
+        ~EnvironmentClass(void);
         /* override grid functions
         */
         void setInitialCells(void);
