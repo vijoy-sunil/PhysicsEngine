@@ -21,6 +21,7 @@ typedef enum{
  * mass                 : mass in kg
  * surfaceSmoothness    : defines smoothness of agent surface [0(smooth) to 1(rough)]
  * velocity             : [velocity in x, velocity in y] (m/s)
+ * collisionFace        : agent faces that are colliding at time t
 */
 typedef struct{
     int id;
@@ -31,6 +32,7 @@ typedef struct{
     float mass;
     float surfaceSmoothness;
     vector_t velocity;
+    std::pair<int, int> collisionFace;
 }agentAttribute_t;
 
 class AgentClass{

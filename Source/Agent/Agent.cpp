@@ -23,8 +23,12 @@ void AgentClass::dumpActiveAgents(void){
         std::cout<<"com: "<<it->second.com.first<<","<<it->second.com.second<<std::endl;
         std::cout<<"mass: "<<it->second.mass<<std::endl;
         std::cout<<"surface smoothness: "<<it->second.surfaceSmoothness<<std::endl;
+
         std::cout<<"velocity: "<<it->second.velocity.x<<","
         <<it->second.velocity.y<<std::endl;
+
+        std::cout<<"collisionFace: "<<it->second.collisionFace.first<<","
+        <<it->second.collisionFace.second<<std::endl;
     }
 }
 
@@ -43,7 +47,7 @@ int AgentClass::createAgent_test(std::pair<int, int> pos){
     attr.mass = 10;
     attr.surfaceSmoothness = 0.5;
     attr.velocity = {0.0, 0.0};
-
+    attr.collisionFace = {0, 0};
     /* add to map
     */
     agentMap[attr.id] = attr;
