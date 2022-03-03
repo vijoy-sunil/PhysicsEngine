@@ -66,23 +66,18 @@ void GridUtilsClass::setBlockAsAgent(std::pair<int, int> pos, std::pair<int, int
 
 /* used to create line obstacles (walls), this also takes in the width parameter
 */
-void GridUtilsClass::setCellAsObstacleStream(std::pair<int, int> posStart, 
-std::pair<int, int> posEnd, const int width, widthType_t wType){
+void GridUtilsClass::setCellStreamAsState(std::pair<int, int> posStart, 
+std::pair<int, int> posEnd, cellState_t state){
     std::vector<std::pair<int, int> > points;
     points = connectTwoCells(posStart, posEnd);
 
     int j, px, py;
     for(int i = 0; i < points.size(); i++){
-        /* increment width
-        */
-        for(j = 0; j < width; j++){
-            px = points[i].first;
-            py = points[i].second;
+        px = points[i].first;
+        py = points[i].second;
 
-            px = wType == BOTTOM ? px : wType == RIGHT ? px - j : wType == LEFT ? px + j : px;
-            py = wType == RIGHT ? py : wType == TOP ? py - j : wType == BOTTOM ? py + j : py;
-            setCellAsObstacle({px, py});
-        }
+        state == OBSTACLE ? setCellAsObstacle({px, py}) : 
+        state == AGENT ? setCellAsAgent({px, py}) : setCellAsFree({px, py}); 
     }
 }
 
@@ -152,4 +147,3 @@ std::pair<int, int> posEnd){
     points.push_back(posEnd);
     return points;
 }
-
