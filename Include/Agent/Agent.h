@@ -4,35 +4,31 @@
 #include "../../Include/Utils/CommonUtils.h"
 #include <map>
 
-/* agent body shape
-*/
-typedef enum{
-    RECTANGLE,
-    TRIANGLE,
-    ELLIPSE
-}agentShape_t;
-
 /* attributes of the agent core
- * id                   : each agent will have an unique id
- * shape                : shape of agent
- * numParticles         : number of particles that make up this agent {1, 9, 25 etc.}
- * dim                  : x, y dimensions ({1, 1} x sqrt(numParticles))
- * com                  : center of mass (x, y) point
- * mass                 : mass in kg
- * surfaceSmoothness    : defines smoothness of agent surface [0(smooth) to 1(rough)]
- * velocity             : [velocity in x, velocity in y] (m/s)
- * collisionFace        : agent faces that are colliding at time t
+ * id                       : each agent will have an unique id
+ * mass                     : mass in kg
+ * width                    : width in cells (min resolution 1) [odd number]
+ * height                   : height in cells (min resolition 1) [odd number]
+ * orientation              : angle wrt x axis, + in counter clockwise (radians)
+ * angularVelocity          : angular velocity in (radiands/s)
+ * coefficientOfRestitution : ratio of the final to initial relative speed between two objects 
+ *                            after they collide. It normally ranges from 0 to 1 where 1 would be 
+ *                            a perfectly elastic collision
+ * positionCenterOfMass     : cell position of com
+ * velocityCenterOfMass     : com velocity in m/s
+ * vertices                 : 4 pairs of corner vertices
 */
 typedef struct{
     int id;
-    agentShape_t shape;
-    int numParticles;
-    std::pair<int, int> dim;
-    std::pair<int, int> com;
     float mass;
-    float surfaceSmoothness;
-    vector_t velocity;
-    std::pair<int, int> collisionFace;
+    float width;
+    float height;
+    float orientation;
+    float angularVelocity;
+    float coefficientOfRestitution;
+    vector2f_t positionCenterOfMass;
+    vector2f_t velocityCenterOfMass;
+    vector4v_t vertices;
 }agentAttribute_t;
 
 class AgentClass{
@@ -41,13 +37,21 @@ class AgentClass{
  
     protected:
         std::map<int, agentAttribute_t> agentMap;
+        vector4v_t computeBoundingVertices(agentAttribute_t attr);
+        void dumpAgentMap(int id);
         
     public:
         AgentClass(void);
         ~AgentClass(void);
 
-        void dumpActiveAgents(void);
-        int createAgent_test(std::pair<int, int> pos);
+        int createAgent(float mass, 
+                        float width, float height,
+                        float alpha, 
+                        float omega,
+                        float epsilon, 
+                        vector2f_t comPos,
+                        vector2f_t comVel
+                        );
         bool removeAgent(int id);
 };
 #endif /* AGENT_H

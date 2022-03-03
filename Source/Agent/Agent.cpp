@@ -1,6 +1,5 @@
 #include "../../Include/Agent/Agent.h"
 #include <iostream>
-#include <cassert>
 #include <cmath>
 
 AgentClass::AgentClass(void){
@@ -12,42 +11,93 @@ AgentClass::AgentClass(void){
 AgentClass::~AgentClass(void){
 }
 
-void AgentClass::dumpActiveAgents(void){
-    std::cout<<"[DEBUG] Dumping agent map"<<std::endl;
+vector4v_t AgentClass::computeBoundingVertices(agentAttribute_t attr){
+    float halfWidth = attr.width/2;
+    float halfHeight = attr.height/2;
 
-    for(auto it = agentMap.begin(); it != agentMap.end(); it++){
-        std::cout<<"agent id: "<<it->first<<std::endl;
-        std::cout<<"shape: "<<it->second.shape<<std::endl;
-        std::cout<<"num particles: "<<it->second.numParticles<<std::endl;
-        std::cout<<"dim: "<<it->second.dim.first<<","<<it->second.dim.second<<std::endl;
-        std::cout<<"com: "<<it->second.com.first<<","<<it->second.com.second<<std::endl;
-        std::cout<<"mass: "<<it->second.mass<<std::endl;
-        std::cout<<"surface smoothness: "<<it->second.surfaceSmoothness<<std::endl;
+    /* compute 2d rotation matrix
+    */
+    float cosVal = cos(attr.orientation);
+    float sineVal = sin(attr.orientation);
+    /* matrix multiplication for 4 vertices
+     * x' = xcos - ysin
+     * y' = xsin + ycos
+    */
+    vector2f_t vertex0;
+    vertex0.x = attr.positionCenterOfMass.x + ((-halfWidth * cosVal) - (-halfHeight * sineVal));
+    vertex0.y = attr.positionCenterOfMass.y + ((-halfWidth * sineVal) + (-halfHeight * cosVal));
 
-        std::cout<<"velocity: "<<it->second.velocity.x<<","
-        <<it->second.velocity.y<<std::endl;
+    vector2f_t vertex1;
+    vertex1.x = attr.positionCenterOfMass.x + ((halfWidth * cosVal) - (-halfHeight * sineVal));
+    vertex1.y = attr.positionCenterOfMass.y + ((halfWidth * sineVal) + (-halfHeight * cosVal));
 
-        std::cout<<"collisionFace: "<<it->second.collisionFace.first<<","
-        <<it->second.collisionFace.second<<std::endl;
-    }
+    vector2f_t vertex2;
+    vertex2.x = attr.positionCenterOfMass.x + ((halfWidth * cosVal) - (halfHeight * sineVal));
+    vertex2.y = attr.positionCenterOfMass.y + ((halfWidth * sineVal) + (halfHeight * cosVal));
+
+    vector2f_t vertex3;
+    vertex3.x = attr.positionCenterOfMass.x + ((-halfWidth * cosVal) - (halfHeight * sineVal));
+    vertex3.y = attr.positionCenterOfMass.y + ((-halfWidth * sineVal) + (halfHeight * cosVal));
+
+#if 0
+    std::cout<<"V0:"<<vertex0.x<<","<<vertex0.y<<std::endl;
+    std::cout<<"V1:"<<vertex1.x<<","<<vertex1.y<<std::endl;
+    std::cout<<"V2:"<<vertex2.x<<","<<vertex2.y<<std::endl;
+    std::cout<<"V3:"<<vertex3.x<<","<<vertex3.y<<std::endl;
+#endif
+
+    return {vertex0, vertex1, vertex2, vertex3};
 }
 
-int AgentClass::createAgent_test(std::pair<int, int> pos){
+void AgentClass::dumpAgentMap(int id){
+    std::cout<<"[DEBUG] Dumping agent map"<<std::endl;
+    agentAttribute_t attr = agentMap[id];
+
+    std::cout<<"[DEBUG] id: "<<attr.id<<std::endl;
+    std::cout<<"[DEBUG] mass: "<<attr.mass<<std::endl;
+    std::cout<<"[DEBUG] width: "<<attr.width<<std::endl;
+    std::cout<<"[DEBUG] height: "<<attr.height<<std::endl;
+    std::cout<<"[DEBUG] orientation: "<<attr.orientation<<std::endl;
+    std::cout<<"[DEBUG] angularVelocity: "<<attr.angularVelocity<<std::endl;
+    std::cout<<"[DEBUG] coefficientOfRestitution: "<<attr.coefficientOfRestitution<<std::endl;
+
+    std::cout<<"[DEBUG] positionCenterOfMass: "
+    <<attr.positionCenterOfMass.x<<","<<attr.positionCenterOfMass.y<<std::endl;
+
+    std::cout<<"[DEBUG] velocityCenterOfMass: "
+    <<attr.velocityCenterOfMass.x<<","<<attr.velocityCenterOfMass.y<<std::endl;
+
+    std::cout<<"[DEBUG] vertices: "
+    <<attr.vertices.v0.x<<","<<attr.vertices.v0.y<<" "
+    <<attr.vertices.v1.x<<","<<attr.vertices.v1.y<<" "
+    <<attr.vertices.v2.x<<","<<attr.vertices.v2.y<<" "
+    <<attr.vertices.v3.x<<","<<attr.vertices.v3.y<<std::endl;
+}
+
+int AgentClass::createAgent(float mass, 
+                            float width, float height,
+                            float alpha, 
+                            float omega,
+                            float epsilon, 
+                            vector2f_t comPos,
+                            vector2f_t comVel
+                            ){
     /* fill up attr
     */
     agentAttribute_t attr;
     attr.id = id++;
-    attr.shape = RECTANGLE;
+    attr.mass = mass;
+    attr.width = width;
+    attr.height = height;
 
-    attr.numParticles = 1;
-    int dimVal = int(sqrt(attr.numParticles));
-    attr.dim = {dimVal, dimVal};
+    attr.orientation = alpha;
+    attr.angularVelocity = omega;
+    attr.coefficientOfRestitution = epsilon;
 
-    attr.com = pos;
-    attr.mass = 10;
-    attr.surfaceSmoothness = 0.5;
-    attr.velocity = {0.0, 0.0};
-    attr.collisionFace = {0, 0};
+    attr.positionCenterOfMass = comPos;
+    attr.velocityCenterOfMass = comVel;
+
+    attr.vertices = computeBoundingVertices(attr);
     /* add to map
     */
     agentMap[attr.id] = attr;
