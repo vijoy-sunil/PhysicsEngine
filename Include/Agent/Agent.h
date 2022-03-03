@@ -14,6 +14,8 @@
  * coefficientOfRestitution : ratio of the final to initial relative speed between two objects 
  *                            after they collide. It normally ranges from 0 to 1 where 1 would be 
  *                            a perfectly elastic collision
+ * momentOfInertia          : the moment of inertia measures the extent to which an object resists
+ *                            rotational acceleration about a particular axis. 
  * positionCenterOfMass     : cell position of com
  * velocityCenterOfMass     : com velocity in m/s
  * vertices                 : 4 pairs of corner vertices
@@ -26,6 +28,7 @@ typedef struct{
     float orientation;
     float angularVelocity;
     float coefficientOfRestitution;
+    float momentOfInertia;
     vector2f_t positionCenterOfMass;
     vector2f_t velocityCenterOfMass;
     vector4v_t vertices;

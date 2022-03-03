@@ -60,6 +60,7 @@ void AgentClass::dumpAgentMap(int id){
     std::cout<<"[DEBUG] orientation: "<<attr.orientation<<std::endl;
     std::cout<<"[DEBUG] angularVelocity: "<<attr.angularVelocity<<std::endl;
     std::cout<<"[DEBUG] coefficientOfRestitution: "<<attr.coefficientOfRestitution<<std::endl;
+    std::cout<<"[DEBUG] momentOfInertia: "<<attr.momentOfInertia<<std::endl;
 
     std::cout<<"[DEBUG] positionCenterOfMass: "
     <<attr.positionCenterOfMass.x<<","<<attr.positionCenterOfMass.y<<std::endl;
@@ -93,6 +94,12 @@ int AgentClass::createAgent(float mass,
     attr.orientation = alpha;
     attr.angularVelocity = omega;
     attr.coefficientOfRestitution = epsilon;
+    /* For a rectangle with the axis of rotation going through its center of mass (z axis), the 
+     * moment of inertia is given by the following equation:
+     * I = (mass / 12.0f) * (width * width + height * height)
+    */
+    attr.momentOfInertia = (attr.mass/12.0f) * 
+    (attr.width * attr.width + attr.height * attr.height);
 
     attr.positionCenterOfMass = comPos;
     attr.velocityCenterOfMass = comVel;
