@@ -35,6 +35,9 @@ class EnvironmentClass: public AgentClass, public GridUtilsClass{
         bool spawnAgent(agentAttribute_t attr);
         bool killAgent(agentAttribute_t attr);
         bool validPendingAgent(int agentID);
+        /* collision
+        */
+        std::vector<vector2f_t> detectCollision(agentAttribute_t attr);
         /* physics
         */
         vector2f_t computeDragForce(agentAttribute_t attr);
