@@ -3,12 +3,12 @@
 
 /* _N       : grid dimension NxN
  * _scale   : screen scale factor
- * _dt      : simulation timestep
+ * _dt      : simulation timestep (s)
  * _g       : gravity (m/s2)
  * _d       : atmosphere density (kg/m3)
 */
-const int _N = 70;
-const int _scale = 10;
+const int _N = 700;
+const int _scale = 1;
 const float _dt = 0.01;
 const float _g = -9.8;
 const float _d = 1.2;
