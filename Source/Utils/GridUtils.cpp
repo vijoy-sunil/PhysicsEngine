@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <limits.h>
+#include <set>
 
 GridUtilsClass::GridUtilsClass(int _N, int _scale, bool noStroke): 
 GridClass(_N, _scale, noStroke){
@@ -145,5 +146,12 @@ std::pair<int, int> posEnd){
     /* do not forget to add the destination point as well (i2, j2)
     */
     points.push_back(posEnd);
+    /* remove duplicate entries in vector
+    */
+    std::set<std::pair<int, int>> s;
+    for(int i = 0; i < points.size(); i++)
+        s.insert(points[i]);
+
+    points.assign(s.begin(), s.end());
     return points;
 }
