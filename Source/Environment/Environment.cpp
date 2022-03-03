@@ -1,7 +1,6 @@
 #include "../../Include/Environment/Environment.h"
 #include "../../Include/Utils/Constants.h"
 #include <iostream>
-#include <algorithm>
 
 EnvironmentClass::EnvironmentClass(float _dt, float _g, float _d, 
                                    int _N, int _scale, bool noStroke):
@@ -50,41 +49,11 @@ bool EnvironmentClass::killAgent(agentAttribute_t attr){
 }
 
 bool EnvironmentClass::validPendingAgent(int agentID){
-    vector4v_t agentVertices = agentMap[agentID].vertices;
-    float agentX1 = std::min(agentVertices.v0.x, 
-                    std::min(agentVertices.v1.x, 
-                    std::min(agentVertices.v2.x, agentVertices.v3.x)));
-
-    float agentX2 = std::max(agentVertices.v0.x, 
-                    std::max(agentVertices.v1.x, 
-                    std::max(agentVertices.v2.x, agentVertices.v3.x)));
-
-    float agentY1 = std::min(agentVertices.v0.y, 
-                    std::min(agentVertices.v1.y, 
-                    std::min(agentVertices.v2.y, agentVertices.v3.y)));
-
-    float agentY2 = std::max(agentVertices.v0.y, 
-                    std::max(agentVertices.v1.y, 
-                    std::max(agentVertices.v2.y, agentVertices.v3.y)));
-
-    /* check for collision with  walls before spawning in
+    /* check spawn agent collision with wall/other agents
     */
-    for(int i = 0; i < envAttribute.walls.size(); i++){
-        vector4v_t wallVertices = envAttribute.walls[i];
-        float wallX1 = wallVertices.v0.x;
-        float wallX2 = wallVertices.v1.x;
-        float wallY1 = wallVertices.v0.y;
-        float wallY2 = wallVertices.v3.y;
-
-        /* check inerval overlap
-        */
-        if(((wallX1 <= agentX2) && (agentX1 <= wallX2)) &&
-           ((wallY1 <= agentY2) && (agentY1 <= wallY2)))
-            return false;
-    }
-    /* TODO : check spawn agent overlap with other agent
-    */
-
+    std::vector<vector2f_t> collisionPoints = detectCollision(agentMap[agentID]);
+    if(collisionPoints.size() != 0)
+        return false;
     return true;
 }
 
@@ -157,7 +126,7 @@ void EnvironmentClass::setInitialCells(void){
 }
 
 void EnvironmentClass::simulationStep(void){
-    /* calculate all forces for all agents and update its velocity attribute
+    /* calculate all forces for all agents
     */
     for(int i = 0; i < agentIDList.size(); i++){
         int agentID = agentIDList[i];
@@ -193,7 +162,7 @@ void EnvironmentClass::simulationStep(void){
         spawnAgent(attr);
     }
 
-#if DEBUG_PRINT == 1
+#if 0
     if(agentIDList.size() != 0)
         dumpAgentMap(0);
 #endif
