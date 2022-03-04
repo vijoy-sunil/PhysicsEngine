@@ -16,7 +16,7 @@
  *                            rotational acceleration about a particular axis. 
  * positionCenterOfMass     : cell position of com
  * velocityCenterOfMass     : com velocity in m/s
- * orientation              : x, y vector; get angle from sqrt(x2 + y2)
+ * orientation              : x, y vector; get angle from sqrt(x2 + y2) (radians)
  * angularVelocity          : x, y (radians/s)
  * vertices                 : 4 pairs of corner vertices
 */

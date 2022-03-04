@@ -12,6 +12,8 @@ AgentClass::~AgentClass(void){
 }
 
 vector4v_t AgentClass::computeBoundingVertices(agentAttribute_t attr){
+    /* CM position
+    */
     float halfWidth = attr.width/2;
     float halfHeight = attr.height/2;
 
