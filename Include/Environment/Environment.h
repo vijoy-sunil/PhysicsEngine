@@ -37,13 +37,16 @@ class EnvironmentClass: public AgentClass, public GridUtilsClass{
         bool validPendingAgent(int agentID);
         /* collision
         */
-        std::vector<vector2f_t> detectCollision(agentAttribute_t attr);
+        std::pair<std::vector<vector2f_t>, std::vector<float>> detectCollision
+        (agentAttribute_t attr);
         /* physics
         */
         vector2f_t computeDragForce(agentAttribute_t attr);
         vector2f_t computeNormalForce(agentAttribute_t attr);
         vector2f_t computeNetForce(agentAttribute_t attr);
-        std::pair<int, int> computeMotion(agentAttribute_t attr);
+        vector2f_t computeNetTorque(agentAttribute_t attr);
+        void integrateAndUpdate(vector2f_t linearAccel, vector2f_t angularAccel, 
+        agentAttribute_t attr);
 
     public:
         EnvironmentClass(float _dt, float _g, float _d, int _N, int _scale, bool noStroke);

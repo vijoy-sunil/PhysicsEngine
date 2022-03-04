@@ -16,7 +16,9 @@
  * 
  * In the vertex-edge collision the collision normal is the perpendicular to the collision edge.
 */
-std::vector<vector2f_t> EnvironmentClass::detectCollision(agentAttribute_t attr){
+std::pair<std::vector<vector2f_t>, std::vector<float>> EnvironmentClass::detectCollision
+(agentAttribute_t attr){
+
     std::vector<vector2f_t> collisionPoints;
     std::vector<float> collisionNormals;
 
@@ -57,13 +59,13 @@ std::vector<vector2f_t> EnvironmentClass::detectCollision(agentAttribute_t attr)
         }
     }
 
-#if 1
+#if 0
     std::cout<<"[DEBUG] Collision points and normals for agent id "<<attr.id<<std::endl;
     for(int i = 0; i < collisionPoints.size(); i++){
         std::cout<<collisionPoints[i].x<<","<<collisionPoints[i].y<<" "
         <<collisionNormals[i]<<std::endl;
     }
 #endif
-    return collisionPoints;
+    return {collisionPoints, collisionNormals};
 }
 

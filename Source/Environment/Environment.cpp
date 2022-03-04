@@ -51,8 +51,9 @@ bool EnvironmentClass::killAgent(agentAttribute_t attr){
 bool EnvironmentClass::validPendingAgent(int agentID){
     /* check spawn agent collision with wall/other agents
     */
-    std::vector<vector2f_t> collisionPoints = detectCollision(agentMap[agentID]);
-    if(collisionPoints.size() != 0)
+    std::pair<std::vector<vector2f_t>, std::vector<float>> collisionPair = 
+    detectCollision(agentMap[agentID]);
+    if(collisionPair.first.size() != 0)
         return false;
     return true;
 }
@@ -67,8 +68,8 @@ void EnvironmentClass::setInitialCells(void){
     */
     attr.width = N - 1;
     attr.height = borderWidth;
-    attr.orientation = 0.0;
     attr.positionCenterOfMass = {attr.width/2, attr.height/2};
+    attr.orientation = {0.0, 0.0};
     attr.vertices = computeBoundingVertices(attr);
     /* add vertices to env attribute
     */
@@ -78,8 +79,8 @@ void EnvironmentClass::setInitialCells(void){
     */
     attr.width = N - 1;
     attr.height = borderWidth;
-    attr.orientation = 0.0;
     attr.positionCenterOfMass = {attr.width/2, N - 1 - attr.height/2};
+    attr.orientation = {0.0, 0.0};
     attr.vertices = computeBoundingVertices(attr);
     /* add vertices to env attribute
     */
@@ -89,8 +90,8 @@ void EnvironmentClass::setInitialCells(void){
     */
     attr.width = borderWidth;
     attr.height = (N - 1) - (2 * borderWidth);
-    attr.orientation = 0.0;
     attr.positionCenterOfMass = {N - 1 - attr.width/2, (N - 1)/2.0f};
+    attr.orientation = {0.0, 0.0};
     attr.vertices = computeBoundingVertices(attr);
     /* add vertices to env attribute
     */
@@ -100,8 +101,8 @@ void EnvironmentClass::setInitialCells(void){
     */
     attr.width = borderWidth;
     attr.height = (N - 1) - (2 * borderWidth);
-    attr.orientation = 0.0;
     attr.positionCenterOfMass = {attr.width/2, (N - 1)/2.0f};
+    attr.orientation = {0.0, 0.0};
     attr.vertices = computeBoundingVertices(attr);
     /* add vertices to env attribute
     */
@@ -111,8 +112,8 @@ void EnvironmentClass::setInitialCells(void){
     */
     attr.width = (N - 1)/2 - borderWidth;
     attr.height = borderWidth;
-    attr.orientation = 0.0;
     attr.positionCenterOfMass = {((3 * (N - 1))/4.0f) - borderWidth/2, (N - 1)/2.0f};
+    attr.orientation = {0.0, 0.0};
     attr.vertices = computeBoundingVertices(attr);
     /* add vertices to env attribute
     */
@@ -126,12 +127,29 @@ void EnvironmentClass::setInitialCells(void){
 }
 
 void EnvironmentClass::simulationStep(void){
-    /* calculate all forces for all agents
+    /* iterate over all agents
     */
     for(int i = 0; i < agentIDList.size(); i++){
         int agentID = agentIDList[i];
         agentAttribute_t attr = agentMap[agentID];
-
+        /* compute net force at CM
+        */
+        vector2f_t netForce = computeNetForce(attr);
+        /* compute linear acceleration of CM
+        */
+        vector2f_t linearAccel = {netForce.x/attr.mass, 
+                                  netForce.y/attr.mass};
+        /* compute net torque at CM
+        */
+        vector2f_t netTorque = computeNetTorque(attr);
+        /* compute angular acceleration of CM
+        */
+        vector2f_t angularAccel = {netTorque.x/attr.momentOfInertia, 
+                                   netTorque.y/attr.momentOfInertia};
+        /* integrate, update agent map
+        */
+        killAgent(attr);
+        integrateAndUpdate(linearAccel, angularAccel, attr);
     }
 
     /* create agent on mouse click
@@ -140,12 +158,13 @@ void EnvironmentClass::simulationStep(void){
         mouseClicked = false;
         std::pair<float, float> cellPos = mouseAction(xPos, yPos);
         int agentID = createAgent(1.0, 
-                                 101, 51, 
-                                 0.0, 
-                                 0.0,
-                                 0.0,
-                                 {cellPos.first, cellPos.second},
-                                 {0.0, 0.0});
+                                  101, 
+                                  51, 
+                                  0.0, 
+                                  {cellPos.first, cellPos.second},
+                                  {0.0, 0.0},
+                                  {0.0, 0.0},
+                                  {0.0, 0.0});
         /* create agent only if mouse clicked in free cell; and if all particles are in free cell
         */
         if(validPendingAgent(agentID))
@@ -159,6 +178,8 @@ void EnvironmentClass::simulationStep(void){
     for(int i = 0; i < agentIDList.size(); i++){
         int agentID = agentIDList[i];
         agentAttribute_t attr = agentMap[agentID];
+        /* update agent spawn
+        */
         spawnAgent(attr);
     }
 
