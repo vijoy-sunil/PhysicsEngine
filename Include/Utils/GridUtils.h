@@ -12,16 +12,6 @@ typedef enum{
     OBSTACLE
 }cellState_t;
 
-/* this is used to determine the method to increase the width of obstacel stream
-*/
-typedef enum{
-    BOTTOM, 
-    RIGHT, 
-    TOP, 
-    LEFT,
-    OTHER
-}widthType_t;
-
 class GridUtilsClass: public GridClass{
     private:
         /* NxN grid that stores the cell states
@@ -42,15 +32,10 @@ class GridUtilsClass: public GridClass{
         void setCellAsAgent(std::pair<int, int> pos);
         void setCellAsObstacle(std::pair<int, int> pos);
 
-        void setBlockAsFree(std::pair<int, int> pos, std::pair<int, int> dim);
-        void setBlockAsAgent(std::pair<int, int> pos, std::pair<int, int> dim);
-
         void setCellStreamAsState(std::pair<int, int> posStart, 
         std::pair<int, int> posEnd, cellState_t state);
 
         void setCellColorFromState(std::pair<int, int> pos, cellState_t state, float alpha=1.0);
-        void setBlockAsState(std::pair<int, int> pos, std::pair<int, int> dim, 
-        cellState_t state, float alpha=1.0);
 
         std::vector<std::pair<int, int> > connectTwoCells(std::pair<int, int> posStart, 
         std::pair<int, int> posEnd);
