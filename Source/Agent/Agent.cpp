@@ -17,8 +17,9 @@ vector4v_t AgentClass::computeBoundingVertices(agentAttribute_t attr){
 
     /* compute 2d rotation matrix
     */
-    float cosVal = cos(attr.orientation);
-    float sineVal = sin(attr.orientation);
+    float alpha = atan2(attr.orientation.y, attr.orientation.x);
+    float cosVal = cos(alpha);
+    float sineVal = sin(alpha);
     /* matrix multiplication for 4 vertices
      * x' = xcos - ysin
      * y' = xsin + ycos
@@ -57,8 +58,6 @@ void AgentClass::dumpAgentMap(int id){
     std::cout<<"[DEBUG] mass: "<<attr.mass<<std::endl;
     std::cout<<"[DEBUG] width: "<<attr.width<<std::endl;
     std::cout<<"[DEBUG] height: "<<attr.height<<std::endl;
-    std::cout<<"[DEBUG] orientation: "<<attr.orientation<<std::endl;
-    std::cout<<"[DEBUG] angularVelocity: "<<attr.angularVelocity<<std::endl;
     std::cout<<"[DEBUG] coefficientOfRestitution: "<<attr.coefficientOfRestitution<<std::endl;
     std::cout<<"[DEBUG] momentOfInertia: "<<attr.momentOfInertia<<std::endl;
 
@@ -68,6 +67,11 @@ void AgentClass::dumpAgentMap(int id){
     std::cout<<"[DEBUG] velocityCenterOfMass: "
     <<attr.velocityCenterOfMass.x<<","<<attr.velocityCenterOfMass.y<<std::endl;
 
+    std::cout<<"[DEBUG] orientation: "
+    <<attr.orientation.x<<","<<attr.orientation.y<<std::endl;
+    std::cout<<"[DEBUG] angularVelocity: "
+    <<attr.angularVelocity.x<<","<<attr.angularVelocity.y<<std::endl;
+
     std::cout<<"[DEBUG] vertices: "
     <<attr.vertices.v0.x<<","<<attr.vertices.v0.y<<" "
     <<attr.vertices.v1.x<<","<<attr.vertices.v1.y<<" "
@@ -76,12 +80,13 @@ void AgentClass::dumpAgentMap(int id){
 }
 
 int AgentClass::createAgent(float mass, 
-                            float width, float height,
-                            float alpha, 
-                            float omega,
+                            float width, 
+                            float height,
                             float epsilon, 
                             vector2f_t comPos,
-                            vector2f_t comVel
+                            vector2f_t comVel,
+                            vector2f_t alpha,
+                            vector2f_t omega
                             ){
     /* fill up attr
     */
@@ -90,9 +95,6 @@ int AgentClass::createAgent(float mass,
     attr.mass = mass;
     attr.width = width;
     attr.height = height;
-
-    attr.orientation = alpha;
-    attr.angularVelocity = omega;
     attr.coefficientOfRestitution = epsilon;
     /* For a rectangle with the axis of rotation going through its center of mass (z axis), the 
      * moment of inertia is given by the following equation:
@@ -103,6 +105,8 @@ int AgentClass::createAgent(float mass,
 
     attr.positionCenterOfMass = comPos;
     attr.velocityCenterOfMass = comVel;
+    attr.orientation = alpha;
+    attr.angularVelocity = omega;
 
     attr.vertices = computeBoundingVertices(attr);
     /* add to map

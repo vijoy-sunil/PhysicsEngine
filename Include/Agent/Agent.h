@@ -9,8 +9,6 @@
  * mass                     : mass in kg
  * width                    : width in cells (min resolution 1) [odd number]
  * height                   : height in cells (min resolition 1) [odd number]
- * orientation              : angle wrt x axis, + in counter clockwise (radians)
- * angularVelocity          : angular velocity in (radiands/s)
  * coefficientOfRestitution : ratio of the final to initial relative speed between two objects 
  *                            after they collide. It normally ranges from 0 to 1 where 1 would be 
  *                            a perfectly elastic collision
@@ -18,6 +16,8 @@
  *                            rotational acceleration about a particular axis. 
  * positionCenterOfMass     : cell position of com
  * velocityCenterOfMass     : com velocity in m/s
+ * orientation              : x, y vector; get angle from atan2(y, x) (radians)
+ * angularVelocity          : x, y (radians/s)
  * vertices                 : 4 pairs of corner vertices
 */
 typedef struct{
@@ -25,12 +25,12 @@ typedef struct{
     float mass;
     float width;
     float height;
-    float orientation;
-    float angularVelocity;
     float coefficientOfRestitution;
     float momentOfInertia;
     vector2f_t positionCenterOfMass;
     vector2f_t velocityCenterOfMass;
+    vector2f_t orientation;
+    vector2f_t angularVelocity;
     vector4v_t vertices;
 }agentAttribute_t;
 
@@ -48,12 +48,13 @@ class AgentClass{
         ~AgentClass(void);
 
         int createAgent(float mass, 
-                        float width, float height,
-                        float alpha, 
-                        float omega,
+                        float width, 
+                        float height,
                         float epsilon, 
                         vector2f_t comPos,
-                        vector2f_t comVel
+                        vector2f_t comVel,
+                        vector2f_t alpha,
+                        vector2f_t omega
                         );
         bool removeAgent(int id);
 };
