@@ -17,7 +17,7 @@ vector4v_t AgentClass::computeBoundingVertices(agentAttribute_t attr){
 
     /* compute 2d rotation matrix
     */
-    float alpha = atan2(attr.orientation.y, attr.orientation.x);
+    float alpha = pow(attr.orientation.x, 2) + pow(attr.orientation.y, 2);
     float cosVal = cos(alpha);
     float sineVal = sin(alpha);
     /* matrix multiplication for 4 vertices
