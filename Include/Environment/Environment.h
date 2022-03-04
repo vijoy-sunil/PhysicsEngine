@@ -10,13 +10,13 @@
  * dt                   : simulation timestep (s)
  * gravity              : gravitational force on the atmosphere operates uniformly (m/s2)
  * density              : drag experienced by a falling object depends on the air density (kg/m3)
- * walls                : 4 vertices of walls
+ * numWalls             : number of agents that are walls, agentID [0 ... numWalls-1]
 */
 typedef struct{
     float dt;
     float gravity;
     float density;
-    std::vector<vector4v_t> walls;
+    int numWalls;
 }envAttribute_t;
 
 class EnvironmentClass: public AgentClass, public GridUtilsClass{
@@ -39,6 +39,7 @@ class EnvironmentClass: public AgentClass, public GridUtilsClass{
         */
         std::pair<std::vector<vector2f_t>, std::vector<float>> detectCollision
         (agentAttribute_t attr);
+        vector2f_t collisionResponseAgentWall(agentAttribute_t attr);
         /* physics
         */
         vector2f_t computeDragForce(agentAttribute_t attr);

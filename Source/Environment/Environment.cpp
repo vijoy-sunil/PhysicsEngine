@@ -12,6 +12,7 @@ GridUtilsClass(_N, _scale, noStroke)
     envAttribute.dt = _dt;
     envAttribute.gravity = _g;
     envAttribute.density = _d;
+    envAttribute.numWalls = 0;
 }
 
 EnvironmentClass::~EnvironmentClass(void){
@@ -49,10 +50,11 @@ bool EnvironmentClass::killAgent(agentAttribute_t attr){
 }
 
 bool EnvironmentClass::validPendingAgent(int agentID){
-    /* check spawn agent collision with wall/other agents
+    /* check spawn agent collision
     */
     std::pair<std::vector<vector2f_t>, std::vector<float>> collisionPair = 
     detectCollision(agentMap[agentID]);
+
     if(collisionPair.first.size() != 0)
         return false;
     return true;
@@ -60,98 +62,85 @@ bool EnvironmentClass::validPendingAgent(int agentID){
 
 void EnvironmentClass::setInitialCells(void){
 #if ENV_SCENE_0 == 1
-    float borderWidth = 0.03 * N;
-    /* consider walls as static agents, we use the attributes to calculate bounding vertices
+    /* consider walls as agents with infinite mass
     */ 
-    agentAttribute_t attr;
+    float borderWidth = 0.03 * N,
+          wallMass = 1000.0;
+    int agentID;
+
     /* wall #1
     */
-    attr.width = N - 1;
-    attr.height = borderWidth;
-    attr.positionCenterOfMass = {attr.width/2, attr.height/2};
-    attr.orientation = {0.0, 0.0};
-    attr.vertices = computeBoundingVertices(attr);
-    /* add vertices to env attribute
-    */
-    envAttribute.walls.push_back(attr.vertices);
+    agentID = createAgent(wallMass, 
+                          N - 1, 
+                          borderWidth, 
+                          0.0, 
+                          {(N - 1)/2.0f, borderWidth/2.0f},
+                          {0.0, 0.0},
+                          {0.0, 0.0},
+                          {0.0, 0.0});
+    agentIDList.push_back(agentID);
+    envAttribute.numWalls++;
 
     /* wall #2
     */
-    attr.width = N - 1;
-    attr.height = borderWidth;
-    attr.positionCenterOfMass = {attr.width/2, N - 1 - attr.height/2};
-    attr.orientation = {0.0, 0.0};
-    attr.vertices = computeBoundingVertices(attr);
-    /* add vertices to env attribute
-    */
-    envAttribute.walls.push_back(attr.vertices);
+    agentID = createAgent(wallMass, 
+                          N - 1, 
+                          borderWidth, 
+                          0.0, 
+                          {(N - 1)/2.0f, N - 1 - borderWidth/2.0f},
+                          {0.0, 0.0},
+                          {0.0, 0.0},
+                          {0.0, 0.0});
+    agentIDList.push_back(agentID);
+    envAttribute.numWalls++;
 
     /* wall #3
     */
-    attr.width = borderWidth;
-    attr.height = (N - 1) - (2 * borderWidth);
-    attr.positionCenterOfMass = {N - 1 - attr.width/2, (N - 1)/2.0f};
-    attr.orientation = {0.0, 0.0};
-    attr.vertices = computeBoundingVertices(attr);
-    /* add vertices to env attribute
-    */
-    envAttribute.walls.push_back(attr.vertices);  
+    agentID = createAgent(wallMass, 
+                          borderWidth, 
+                          (N - 1) - (2 * borderWidth), 
+                          0.0, 
+                          {N - 1 - borderWidth/2.0f, (N - 1)/2.0f},
+                          {0.0, 0.0},
+                          {0.0, 0.0},
+                          {0.0, 0.0});
+    agentIDList.push_back(agentID);
+    envAttribute.numWalls++;
 
     /* wall #4
     */
-    attr.width = borderWidth;
-    attr.height = (N - 1) - (2 * borderWidth);
-    attr.positionCenterOfMass = {attr.width/2, (N - 1)/2.0f};
-    attr.orientation = {0.0, 0.0};
-    attr.vertices = computeBoundingVertices(attr);
-    /* add vertices to env attribute
-    */
-    envAttribute.walls.push_back(attr.vertices);  
+    agentID = createAgent(wallMass, 
+                          borderWidth, 
+                          (N - 1) - (2 * borderWidth), 
+                          0.0, 
+                          {borderWidth/2.0f, (N - 1)/2.0f},
+                          {0.0, 0.0},
+                          {0.0, 0.0},
+                          {0.0, 0.0});
+    agentIDList.push_back(agentID);
+    envAttribute.numWalls++;
 
     /* wall #5
     */
-    attr.width = (N - 1)/2 - borderWidth;
-    attr.height = borderWidth;
-    attr.positionCenterOfMass = {((3 * (N - 1))/4.0f) - borderWidth/2, (N - 1)/2.0f};
-    attr.orientation = {0.0, 0.0};
-    attr.vertices = computeBoundingVertices(attr);
-    /* add vertices to env attribute
-    */
-    envAttribute.walls.push_back(attr.vertices); 
+    agentID = createAgent(wallMass, 
+                          (N - 1)/2 - borderWidth, 
+                          borderWidth, 
+                          0.0, 
+                          {((3 * (N - 1))/4.0f) - borderWidth/2, (N - 1)/2.0f},
+                          {0.0, 0.0},
+                          {0.0, 0.0},
+                          {0.0, 0.0});
+    agentIDList.push_back(agentID);
+    envAttribute.numWalls++;
 
-    /* surfaces
+    /* draw wall agents
     */
-    for(int i = 0; i < envAttribute.walls.size(); i++)
-        setMeshAsState(envAttribute.walls[i], OBSTACLE);
+    for(int i = 0; i < envAttribute.numWalls; i++)
+        setMeshAsState(agentMap[i].vertices, OBSTACLE);
 #endif
 }
 
 void EnvironmentClass::simulationStep(void){
-    /* iterate over all agents
-    */
-    for(int i = 0; i < agentIDList.size(); i++){
-        int agentID = agentIDList[i];
-        agentAttribute_t attr = agentMap[agentID];
-        /* compute net force at CM
-        */
-        vector2f_t netForce = computeNetForce(attr);
-        /* compute linear acceleration of CM
-        */
-        vector2f_t linearAccel = {netForce.x/attr.mass, 
-                                  netForce.y/attr.mass};
-        /* compute net torque at CM
-        */
-        vector2f_t netTorque = computeNetTorque(attr);
-        /* compute angular acceleration of CM
-        */
-        vector2f_t angularAccel = {netTorque.x/attr.momentOfInertia, 
-                                   netTorque.y/attr.momentOfInertia};
-        /* integrate, update agent map
-        */
-        killAgent(attr);
-        integrateAndUpdate(linearAccel, angularAccel, attr);
-    }
-
     /* create agent on mouse click
     */
     if(mouseClicked){
@@ -165,22 +154,45 @@ void EnvironmentClass::simulationStep(void){
                                   {0.0, 0.0},
                                   {0.0, 0.0},
                                   {0.0, 0.0});
-        /* create agent only if mouse clicked in free cell; and if all particles are in free cell
+        /* create agent that are not interpenetrated
         */
         if(validPendingAgent(agentID))
             agentIDList.push_back(agentID);
         else
             removeAgent(agentID);
+        /* draw agent
+        */
+        spawnAgent(agentMap[agentID]);
     }
 
-    /* draw all agents
-    */
-    for(int i = 0; i < agentIDList.size(); i++){
-        int agentID = agentIDList[i];
-        agentAttribute_t attr = agentMap[agentID];
-        /* update agent spawn
+    else{
+        /* iterate over all agents [excluding wall agents]
         */
-        spawnAgent(attr);
+        for(int i = envAttribute.numWalls; i < agentIDList.size(); i++){
+            int agentID = agentIDList[i];
+            agentAttribute_t attr = agentMap[agentID];
+            /* erase agent
+            */
+            killAgent(attr);
+            /* compute net force at CM
+            */
+            vector2f_t netForce = computeNetForce(attr);
+            /* compute linear acceleration of CM
+            */
+            vector2f_t linearAccel = {netForce.x/attr.mass, 
+                                    netForce.y/attr.mass};
+            /* compute net torque at CM
+            */
+            vector2f_t netTorque = computeNetTorque(attr);
+            /* compute angular acceleration of CM
+            */
+            vector2f_t angularAccel = {netTorque.x/attr.momentOfInertia, 
+                                    netTorque.y/attr.momentOfInertia};
+            /* integrate, update and draw agent map
+            */
+            integrateAndUpdate(linearAccel, angularAccel, attr);
+            spawnAgent(agentMap[agentID]);
+        }
     }
 
 #if 0
