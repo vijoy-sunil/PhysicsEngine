@@ -68,6 +68,23 @@ std::pair<int, int> posEnd, cellState_t state){
     }
 }
 
+/* different from other functions in this util, since highlight is not a cell state
+*/
+void GridUtilsClass::setCellStreamColor(std::pair<int, int> posStart, 
+std::pair<int, int> posEnd, colorVal cVal, float alpha){
+    std::vector<std::pair<int, int> > points;
+    points = connectTwoCells(posStart, posEnd);
+
+    int j, px, py;
+    for(int i = 0; i < points.size(); i++){
+        px = points[i].first;
+        py = points[i].second;
+
+        if(isCellFree({px, py}))
+            genCellColor(px, py, cVal, alpha);   
+    }
+}
+
 void GridUtilsClass::setCellColorFromState(std::pair<int, int> pos, 
 cellState_t state, float alpha){
     colorVal cVal = state == FREE ? whiteVal : state == AGENT ? redVal: blackVal;

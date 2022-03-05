@@ -35,6 +35,8 @@ class GridUtilsClass: public GridClass{
         void setCellStreamAsState(std::pair<int, int> posStart, 
         std::pair<int, int> posEnd, cellState_t state);
 
+        void setCellStreamColor(std::pair<int, int> posStart, 
+        std::pair<int, int> posEnd, colorVal cVal, float alpha=1.0);
         void setCellColorFromState(std::pair<int, int> pos, cellState_t state, float alpha=1.0);
 
         std::vector<std::pair<int, int> > connectTwoCells(std::pair<int, int> posStart, 
