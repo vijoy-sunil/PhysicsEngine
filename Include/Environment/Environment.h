@@ -19,6 +19,15 @@ typedef struct{
     int numWalls;
 }envAttribute_t;
 
+/* collision info
+*/
+typedef struct{
+    bool isCollision;
+    std::vector<int> agentIDs;
+    std::vector<vector2f_t> points;
+    std::vector<float> normals;
+}collisionInfo_t;
+
 class EnvironmentClass: public AgentClass, public GridUtilsClass{
     private:
         /* env attribute
@@ -37,9 +46,12 @@ class EnvironmentClass: public AgentClass, public GridUtilsClass{
         bool validPendingAgent(int agentID);
         /* collision
         */
-        std::pair<std::vector<vector2f_t>, std::vector<float>> detectCollision
-        (agentAttribute_t attr);
-        vector2f_t collisionResponseAgentWall(agentAttribute_t attr);
+        void highlightCollisionPoints(bool set, agentAttribute_t attr, 
+        std::vector<vector2f_t> collisionPoints);
+        int getCollidingAgent(agentAttribute_t primaryAttr,
+        std::pair<int, int> point);
+        collisionInfo_t detectCollision(agentAttribute_t attr);
+        vector2f_t collisionResponse(agentAttribute_t attr);
         /* physics
         */
         vector2f_t computeDragForce(agentAttribute_t attr);

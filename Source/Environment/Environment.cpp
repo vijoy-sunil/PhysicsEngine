@@ -52,10 +52,8 @@ bool EnvironmentClass::killAgent(agentAttribute_t attr){
 bool EnvironmentClass::validPendingAgent(int agentID){
     /* check spawn agent collision
     */
-    std::pair<std::vector<vector2f_t>, std::vector<float>> collisionPair = 
-    detectCollision(agentMap[agentID]);
-
-    if(collisionPair.first.size() != 0)
+    collisionInfo_t info = detectCollision(agentMap[agentID]);
+    if(info.isCollision)
         return false;
     return true;
 }
@@ -145,12 +143,12 @@ void EnvironmentClass::simulationStep(void){
     */
     if(mouseClicked){
         mouseClicked = false;
-        std::pair<float, float> cellPos = mouseAction(xPos, yPos);
+        std::pair<int, int> cellPos = mouseAction(xPos, yPos);
         int agentID = createAgent(1.0, 
                                   101, 
                                   51, 
                                   0.0, 
-                                  {cellPos.first, cellPos.second},
+                                  {cellPos.first/1.0f, cellPos.second/1.0f},
                                   {0.0, 0.0},
                                   {0.0, 0.0},
                                   {0.0, 0.0});
